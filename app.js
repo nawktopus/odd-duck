@@ -8,6 +8,8 @@ let img3 = document.querySelector('section img:nth-child(3)');
 
 let click = 0;
 let maxClick = 25;
+let imgCount = 4;
+let indexArray = [];
 
 function Image(name, src) {
     this.name = name;
@@ -24,22 +26,17 @@ function getRand() {
 }
 
 function getImage() {
-    let image1 = getRand();
-    let image2 = getRand();
-    let image3 = getRand();
-
-    while(image1 === image2) {
-        image2 = getRand();
+    while (indexArray.length < imgCount) {
+        let randomNumber = getRand();
+        if (!indexArray.includes(randomNumber)) {
+            indexArray.push(randomNumber);
+        }
     }
-
-    while(image1 === image3) {
-        image3 = getRand();
-    }
-
-    while (image2 === image3) {
-        image3 = getRand();
-    }
-
+    console.log(indexArray);
+    
+    let image1 = indexArray.shift();
+    let image2 = indexArray.shift();
+    let image3 = indexArray.shift();
     img1.src = Image.imgArray[image1].src;
     img2.src = Image.imgArray[image2].src;
     img3.src = Image.imgArray[image3].src;
@@ -55,7 +52,7 @@ function imageClicks(event) {
     if (event.target === imageContainer) {
         alert('Please click on the image')
     }
-    click++;
+    click++; 
     let clickImage = event.target.alt; 
     for (let i = 0; i < Image.imgArray.length; i++) {
         if (clickImage === Image.imgArray[i].name) {
@@ -66,23 +63,72 @@ function imageClicks(event) {
 
 if (click === maxClick) {
     imageContainer.removeEventListener('click', imageClicks);
-    resultButton.addEventListener('click', getResults);
-    resultButton.className = 'clicks-allowed';
     imageContainer.className = 'no-voting';
+    getChart();
 } else {
     getImage();
 }
 }
 
-
-function getResults() {
-    let ul = document.querySelector('ul');
-    for (let i=0; i < Image.imgArray.length; i++) {
-        let li =document.createElement('li')
-        li.textContent = `${Image.imgArray[i].name} had ${Image.imgArray[i].views} view and was clicked ${Image.imgArray[i].click} times.`;
-        ul.appendChild(li);
+function getChart() {
+    let imageName = [];
+    let imageLikes = [];
+    let imageViews = [];
+    for (let i = 0; i <Image.imgArray.length; i++) {
+        imageName.push(Image.imgArray[i].name);
+        imageLikes.push(Image.imgArray[i].click);
+        imageViews.push(Image.imgArray[i].views);
     }
+
+const data = {
+    labels: imageName, 
+    datasets: [{
+        label: 'Likes',
+        data: imageLikes,
+        backgroundColor: [
+            'rgba(255, 0, 0, 0.2)'
+        ],
+        borderColor: [
+            'rgba(255, 0, 0, 0.8)'
+        ],
+        borderWidth: 1
+    },
+    {
+        label: 'Views',
+        data :imageViews,
+        backgroundColor: [
+            'rgba(245, 40, 145, 0.8)'
+        ],
+        borderColor: [
+            'rgba(226, 160, 194, 0.8)'
+        ],
+        borderWidth: 1
+    }]
+};
+
+const config = {
+    type: 'bar',
+    data: data,
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    },
 }
+let canvas = document.getElementById('chart');
+const chart = new Chart(canvas, config);
+};
+
+// function getResults() {
+//     let ul = document.querySelector('ul');
+//     for (let i=0; i < Image.imgArray.length; i++) {
+//         let li =document.createElement('li')
+//         li.textContent = `${Image.imgArray[i].name} had ${Image.imgArray[i].views} views and was clicked ${Image.imgArray[i].click} times.`;
+//         ul.appendChild(li);
+//     }
+// }
 
 new Image('bag', './img/bag.jpg');
 new Image('banana', './img/banana.jpg');
