@@ -8,7 +8,7 @@ let img3 = document.querySelector('section img:nth-child(3)');
 
 let click = 0;
 let maxClick = 25;
-let imgCount = 4;
+let imgCount = 9;
 let indexArray = [];
 
 function Image(name, src) {
