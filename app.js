@@ -18,3 +18,14 @@ function Image() {
 let image = new Image('bag',this.images[0],);
 
 console.log(image.rand());
+function getRand(photos) {
+    const test = document.getElementById('img');
+    let len = photos.length;
+    let rand = Math.floor(Math.random() * len);
+    let item = photos[rand];
+    test.appendChild(item);
+}
+
+console.log(photos[0]);
+console.log(this.rand);
+
